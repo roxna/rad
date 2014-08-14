@@ -1,0 +1,17 @@
+
+    <div class="form-box">
+        <div class="header">Upload a pdf document</div>
+        <form enctype="multipart/form-data" action="{% url 'save_uploaded_data' %}" method="post">
+{#            ????? action="save_file.py" #}
+            {% csrf_token %}
+            <div class="body bg-gray">
+                <p>Upload File: <br><input type="file" name="uploaded_file"></p><br>
+                <p>File Password: <input type="text" name="password"></p><br>
+                <p><em>Note: If this file successfully uploads, insights from this data will
+                    automatically reflect in the analytics on the dashboard.</em></p>
+            </div>
+            <div class="footer">
+                <button type="submit" class="btn bg-dark-teal btn-block">Upload</button>
+            </div>
+        </form>
+    </div>

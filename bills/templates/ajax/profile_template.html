@@ -1,0 +1,18 @@
+
+    <div class="form-box">
+        <div class="header">Profile</div>
+        <form method="post">
+            <div class="body bg-gray">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field }}
+                        {{ field.error }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="footer">
+                <button type="submit" class="btn bg-dark-teal btn-block">Save</button>
+            </div>
+        </form>
+    </div>

@@ -1,0 +1,26 @@
+{% extends "base_home.html" %}
+
+    {% block title %} RAD | Register {% endblock %}
+
+    {% block content %}
+
+        <div class="form-box" id="login-box">
+            <div class="header">Register</div>
+            <form method="POST">
+                <div class="body bg-gray">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field }}
+                            {{ field.error }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="footer">
+                    <button type="submit" class="btn bg-dark-teal btn-block" name="register">Register</button>
+                    <a href="{% url "login" %}" class="text-center">Already a member? Sign in</a>
+                </div>
+            </form>
+        </div>
+
+    {% endblock %}

@@ -1,0 +1,59 @@
+/* HOME PAGE CSS */
+.menubar{
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.menuItem{
+    color: white;
+    font-size: 20px;
+}
+
+#menuItemMain{
+  float: left;
+  font-size: 30px;
+  line-height: 50px;
+  text-align: center;
+  padding: 0 10px;
+  width: 220px;
+  font-family: 'Kaushan Script', cursive;
+  font-weight: 500;
+  height: 50px;
+  display: block;
+  color: teal;
+  margin-top: 10px;
+}
+
+.intro-header {
+	padding-top: 50px;
+	padding-bottom: 50px;
+	color: #f8f8f8;
+	background: url(../img/homepage.jpg) no-repeat center center;
+    width: 100%;
+    height: 500px;
+	background-size: cover;
+	text-align: center;
+}
+
+.intro-message {
+	position: relative;
+	padding-top: 10%;
+	padding-bottom: 20%;
+}
+
+.intro-message > h1 {
+	margin: 0;
+	font-size: 5em;
+	text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.6);
+}
+
+.intro-message > h3 {
+	text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* DASHBOARD CSS */
+
+.chart{
+    height: 300px;
+    position: relative;
+}

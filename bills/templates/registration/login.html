@@ -1,0 +1,26 @@
+{% extends "base_home.html" %}
+
+    {% block title %} RAD | Log in {% endblock %}
+
+    {% block content %}
+
+            <div class="form-box" id="login-box">
+                <div class="header">Sign In</div>
+                <form method="post">
+                    <div class="body bg-gray">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group">
+                                {{ field }}
+                                {{ field.error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="footer">
+                        <button type="submit" class="btn bg-dark-teal btn-block" name="register">Sign In</button>
+                        <a href="{% url "register" %}" class="text-center">Not a member? Register</a>
+                    </div>
+                </form>
+            </div>
+
+    {% endblock %}
