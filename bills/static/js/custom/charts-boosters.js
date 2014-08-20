@@ -4,6 +4,8 @@
 
 $(document).ready(function(){
 
+    $('#loading-image').hide();
+
     var prepareChartBlock = function(){
         $('#dashboard-block').hide();
         $('#chart-block').show();
@@ -18,6 +20,12 @@ $(document).ready(function(){
             url: "/api/v1/booster/?format=json/",
             type: "GET",
             dataType: "json",
+            beforeSend: function(){
+                $('#loading-image').show();
+            },
+            complete: function(){
+                $('#loading-image').hide();
+            },
             success: function(booster_analysis) {
                 $('#page-header').html('Boosters (SMS etc) Analysis');
                 var outgoing_local_same_network = 0;

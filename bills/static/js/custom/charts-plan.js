@@ -25,11 +25,16 @@ $(document).ready(function(){
                 var postpaid_plans = 0;
                 var postpaid_plans_599 = 0;
                 var postpaid_plans_799 = 0;
+                var inr_plans = 0;
+                var usd_plans = 0;
+
                 for (var i=0; i<more_analysis.objects.length; i++){
                     if (more_analysis.objects[i].type == 0){prepaid_plans++;}
                     else if (more_analysis.objects[i].type == 1){postpaid_plans++;}
                     if (more_analysis.objects[i].min_rental == "599.00"){postpaid_plans_599++;}
                     else if (more_analysis.objects[i].min_rental == "799.00"){postpaid_plans_799++;}
+                    if (more_analysis.objects[i].currency == "INR"){inr_plans++;}
+                    else if (more_analysis.objects[i].currency == "USD"){usd_plans++;}
                 }
                 // CHART 1 - Pie chart of Postpaid-Prepaid breakdown
                 $('#chart1-body').highcharts({
@@ -74,7 +79,7 @@ $(document).ready(function(){
                     xAxis: { categories: ['Postpaid']},
                     yAxis: {
                         min: 0,
-                        title: {text: 'No. of calls'},
+                        title: {text: 'No. of plans'},
                         style: {
                             fontWeight: 'bold',
                             color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
@@ -96,8 +101,42 @@ $(document).ready(function(){
                     }]
                 });
 
-                // CHART 3
-//                $('#chart3').html();
+                // CHART 3 - Pie chart of currency breakdown
+                $('#chart3-body').highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: 1,
+                        plotShadow: false
+                    },
+                    title: {text: 'Plan breakdown by currency'},
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            name: '%',
+                            data: [
+                                ['INR', inr_plans],
+                                ['USD', usd_plans],
+                            ]
+                        }
+                    ]
+                });
+
             },
             error: function(error_message){
                 console.log(error_message);

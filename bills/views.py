@@ -116,16 +116,11 @@ def upload_data(request):
             file = request.FILES['file']
             password = request.POST['password']
             parse_data(file, password)
-            # messages.success(request, 'File uploaded successfully.')
             return redirect('/dashboard')
-        # else:
-        #     messages.error(request, 'Sorry, there was an issue uploading the file.')
-        #     return redirect('/dashboard')
     else:
         form = UploadDataForm()
     data = {
         'form': form,
-        # 'messages': messages
     }
     return render(request, "ajax/upload_data_template.html", data)
 
