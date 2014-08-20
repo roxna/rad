@@ -1,11 +1,8 @@
-import cgi
 import json
-from decimal import Decimal
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import get_current_site
-from django.core import serializers
-from django.db.models import Count, Sum
+from django.db.models import Sum
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, resolve_url
 from django.template.response import TemplateResponse
@@ -13,8 +10,8 @@ from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-from bills.forms import RegistrationForm, ProfileForm, LoginForm
-from bills.models import Call, Booster, Data, Roaming, Plan
+from bills.forms import RegistrationForm, ProfileForm, LoginForm, UploadDataForm
+from bills.models import Call, Booster, Data, Roaming
 from bills.utils import parse_data
 from rad import settings
 
@@ -79,22 +76,25 @@ def login(request, template_name='registration/login.html',
                             current_app=current_app)
 
 
-# @login_required
+@login_required
 def dashboard(request):
     total_calls_cost = Call.objects.aggregate(cost=Sum('cost'))['cost']
     total_boosters_cost = Booster.objects.aggregate(cost=Sum('cost'))['cost']
     total_data_cost = Data.objects.all().aggregate(cost=Sum('cost'))['cost']
-    total_cost = total_calls_cost + total_boosters_cost + total_data_cost
+    total_roaming_cost = Roaming.objects.all().aggregate(cost=Sum('cost'))['cost']
+    total_cost = total_calls_cost + total_boosters_cost + total_roaming_cost + total_data_cost
     data = {
         'total_cost': total_cost,
         'total_calls_cost_percent': round(total_calls_cost / total_cost * 100, 0),
         'total_boosters_cost_percent': round(total_boosters_cost / total_cost * 100),
-        'total_data_cost_percent': round(total_data_cost / total_cost * 100)
+        'total_data_cost_percent': round(total_data_cost / total_cost * 100),
+        'total_roaming_cost_percent': round(total_roaming_cost / total_cost * 100),
     }
     return render(request, "dashboard.html", data)
 
 
 # AJAX URLS
+@login_required
 def profile(request):
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=request.user)
@@ -108,18 +108,29 @@ def profile(request):
     return render(request, "ajax/profile_template.html", data)
 
 
+@login_required
 def upload_data(request):
-    return render(request, "ajax/upload_data_template.html")
+    if request.method == 'POST':
+        form = UploadDataForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES['file']
+            password = request.POST['password']
+            parse_data(file, password)
+            # messages.success(request, 'File uploaded successfully.')
+            return redirect('/dashboard')
+        # else:
+        #     messages.error(request, 'Sorry, there was an issue uploading the file.')
+        #     return redirect('/dashboard')
+    else:
+        form = UploadDataForm()
+    data = {
+        'form': form,
+        # 'messages': messages
+    }
+    return render(request, "ajax/upload_data_template.html", data)
 
 
-def save_uploaded_data(request):
-    file_data = cgi.FieldStorage()
-    file_path = file_data['uploaded_file'].value
-    file_password = file_data['password'].value
-    print file_path, file_password
-    parse_data(file_path, file_password)
-
-
+@login_required
 def dashboard_analysis(request):
     total_calls = Call.objects.aggregate(sum=Sum('cost'))['sum']
     total_boosters = Booster.objects.aggregate(sum=Sum('cost'))['sum']
@@ -133,62 +144,3 @@ def dashboard_analysis(request):
     }
     return HttpResponse(json.dumps(data),  content_type='application/json')
 
-
-# def call_analysis(request):
-#     # To improve performance w/ annotate/aggregate (annotate(count=Count(type=Call.OUTGOING_LOCAL_SAME_NETWORK_MOBILE)))
-#     total_calls = Call.objects.all().count()
-#     outgoing_local_same_network = Call.objects.filter(type=Call.OUTGOING_LOCAL_SAME_NETWORK_MOBILE).count()
-#     outgoing_local_other_network = Call.objects.filter(type=Call.OUTGOING_LOCAL_OTHER_NETWORK_MOBILE).count()
-#     outgoing_local_fixed_landline = Call.objects.filter(type=Call.OUTGOING_LOCAL_FIXED_LANDLINE).count()
-#     outgoing_std_same_network = Call.objects.filter(type=Call.OUTGOING_STD_SAME_NETWORK_MOBILE).count()
-#     outgoing_std_other_network = Call.objects.filter(type=Call.OUTGOING_STD_OTHER_NETWORK_MOBILE).count()
-#     outgoing_std_fixed_landline = Call.objects.filter(type=Call.OUTGOING_STD_FIXED_LANDLINE).count()
-#     outgoing_intl = Call.objects.filter(type=Call.OUTGOING_INTL).count()
-#     data = {
-#         'total_calls': total_calls,
-#         'outgoing_local_same_network': outgoing_local_same_network,
-#         'outgoing_local_other_network': outgoing_local_other_network,
-#         'outgoing_local_fixed_landline': outgoing_local_fixed_landline,
-#         'outgoing_std_same_network': outgoing_std_same_network,
-#         'outgoing_std_other_network': outgoing_std_other_network,
-#         'outgoing_std_fixed_landline': outgoing_std_fixed_landline,
-#         'outgoing_intl': outgoing_intl,
-#     }
-#     return HttpResponse(json.dumps(data), content_type='application/json')
-
-
-# def booster_analysis(request):
-#     # To improve performance w/ annotate/aggregate
-#     total_boosters = Booster.objects.all().count()
-#     outgoing_local_same_network = Call.objects.filter(type=Call.OUTGOING_LOCAL_SAME_NETWORK_MOBILE).count()
-#     outgoing_local_other_network = Call.objects.filter(type=Call.OUTGOING_LOCAL_OTHER_NETWORK_MOBILE).count()
-#     outgoing_std_same_network = Call.objects.filter(type=Call.OUTGOING_STD_SAME_NETWORK_MOBILE).count()
-#     outgoing_std_other_network = Call.objects.filter(type=Call.OUTGOING_STD_OTHER_NETWORK_MOBILE).count()
-#     outgoing_intl = Call.objects.filter(type=Call.OUTGOING_INTL).count()
-#     data = {
-#         'total_boosters': total_boosters,
-#         'outgoing_local_same_network': outgoing_local_same_network,
-#         'outgoing_local_other_network': outgoing_local_other_network,
-#         'outgoing_std_same_network': outgoing_std_same_network,
-#         'outgoing_std_other_network': outgoing_std_other_network,
-#         'outgoing_intl': outgoing_intl,
-#     }
-#     return HttpResponse(json.dumps(data), content_type='application/json')
-
-
-# def data_analysis(request):
-#     pass
-
-
-# def more_analysis(request):
-#     prepaid_plans = Plan.objects.filter(type=Plan.POSTPAID).count()
-#     postpaid_plans = Plan.objects.filter(type=Plan.PREPAID).count()
-#     postpaid_plans_599 = Plan.objects.filter(name__icontains='599').count()
-#     postpaid_plans_799 = Plan.objects.filter(name__icontains='799').count()
-#     data = {
-#         'prepaid_plans': prepaid_plans,
-#         'postpaid_plans': postpaid_plans,
-#         'postpaid_plans_599': postpaid_plans_599,
-#         'postpaid_plans_799': postpaid_plans_799
-#     }
-#     return HttpResponse(json.dumps(data), content_type='application/json')

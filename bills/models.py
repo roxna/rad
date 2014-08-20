@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -13,12 +14,15 @@ class User(AbstractUser):
 
 
 class Subscriber(models.Model):
-    name = models.CharField(max_length=20)
-    address = models.CharField(max_length=100, null=True, blank=True)
-    city = models.CharField(max_length=20, null=True, blank=True)
-    zip = models.IntegerField(null=True, blank=True)
-    relationship_num = models.IntegerField(null=True, blank=True)
-    credit_limit = models.DecimalField(default=0.00, decimal_places=2, max_digits=7)
+    name = models.CharField(max_length=20, default="")
+    phone_number = models.BigIntegerField(default=0)
+    address = models.CharField(max_length=100, default="", null=True, blank=True)
+    city = models.CharField(max_length=20, default="", null=True, blank=True)
+    state = models.CharField(max_length=20, default="", null=True, blank=True)
+    zip = models.IntegerField(default=00000, null=True, blank=True)
+    relationship_num = models.IntegerField(default=0, null=True, blank=True)
+    credit_limit = models.IntegerField(default=0, null=True, blank=True)
+    security_deposit = models.IntegerField(default=0, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -31,14 +35,14 @@ class Plan(models.Model):
         (POSTPAID, 'Postpaid'),
         (PREPAID, 'Prepaid')
     )
-    type = models.IntegerField(max_length=20, choices=PLANS)
-    name = models.CharField(max_length=30)
-    min_rental = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True)
+    type = models.IntegerField(max_length=20, choices=PLANS, default=1)
+    name = models.CharField(max_length=30, default="")
+    min_rental = models.IntegerField(default=0, null=True, blank=True)
     CURRENCY = (
         ('INR', 'INR'),
         ('USD', 'USD')
     )
-    currency = models.CharField(max_length=10, choices=CURRENCY)
+    currency = models.CharField(max_length=10, default="INR", choices=CURRENCY)
 
     def __unicode__(self):
         return self.name
@@ -46,21 +50,21 @@ class Plan(models.Model):
 
 # BILL DETAILS - CENTRAL MODEL WITH FOREIGN/M2M KEYS TO OTHER MODELS
 class Bill(models.Model):
-    number = models.IntegerField()
-    start_date = models.DateField()
-    end_date = models.DateField()
-    bill_date = models.DateField()
-    due_date = models.DateField()
-    total_bill = models.DecimalField(decimal_places=2, max_digits=7)
-    onetime_charge = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True)
-    monthly_charge = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True)
-    call_charge = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True)
-    booster_charge = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True)
-    data_charge = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True)
-    roaming_charge = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True)
-    discount = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True)
-    late_fee = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True, default=0)
-    tax = models.DecimalField(decimal_places=2, max_digits=7, null=True, blank=True)
+    number = models.IntegerField(default=0)
+    start_date = models.DateField(default=2000-01-01)
+    end_date = models.DateField(default=2000-01-01)
+    bill_date = models.DateField(default=2000-01-01)
+    due_date = models.DateField(default=2000-01-01)
+    total_bill = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, )
+    onetime_charge = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, null=True, blank=True)
+    monthly_charge = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, null=True, blank=True)
+    call_charge = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, null=True, blank=True)
+    booster_charge = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, null=True, blank=True)
+    data_charge = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, null=True, blank=True)
+    roaming_charge = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, null=True, blank=True)
+    discount = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, null=True, blank=True)
+    late_fee = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, null=True, blank=True)
+    tax = models.DecimalField(decimal_places=3, max_digits=7, default=0.00, null=True, blank=True)
 
     # FOREIGN KEYS TO BILL MODEL
     subscriber = models.ForeignKey(Subscriber, related_name='bill')
@@ -73,12 +77,12 @@ class Bill(models.Model):
 
 # PARENT CLASS
 class Usage(models.Model):
-    date = models.DateField()
-    time = models.TimeField()
-    recipient_number = models.BigIntegerField()
-    volume = models.CharField(null=True, blank=True, max_length=6)
-    duration = models.IntegerField(null=True, blank=True)
-    cost = models.DecimalField(decimal_places=2, max_digits=7)
+    date = models.DateField(default=2000-01-01)
+    time = models.TimeField(default=datetime.datetime.strptime('12:12:12', '%H:%M:%S').time())
+    recipient_number = models.BigIntegerField(default=0)
+    duration = models.CharField(default='00:00', max_length=5, null=True, blank=True)
+    volume = models.IntegerField(default=0, null=True, blank=True, max_length=6)
+    cost = models.DecimalField(decimal_places=2, max_digits=7, default=0.00)
     bill = models.ForeignKey(Bill, related_name='%(class)s')
 
     class Meta:

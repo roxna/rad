@@ -1,5 +1,6 @@
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
+from tastypie.cache import SimpleCache
 from tastypie.fields import ToManyField, ToOneField
 from tastypie.resources import ModelResource
 from bills.models import Subscriber, Plan, Call, Bill, Booster, Roaming, Data
@@ -34,6 +35,7 @@ class SubscriberResource(ModelResource):
         resource_name = 'subscriber'
         authorization = Authorization()
         authentication = Authentication()
+        cache = SimpleCache(timeout=1000)
 
 
 class PlanResource(ModelResource):
@@ -44,6 +46,7 @@ class PlanResource(ModelResource):
         resource_name = 'plan'
         authorization = Authorization()
         authentication = Authentication()
+        cache = SimpleCache(timeout=1000)
 
 
 class BillResource(ModelResource):
@@ -59,6 +62,7 @@ class BillResource(ModelResource):
         resource_name = 'bill'
         authorization = Authorization()
         authentication = Authentication()
+        cache = SimpleCache(timeout=1000)
 
 
 class CallResource(ModelResource):
@@ -67,8 +71,16 @@ class CallResource(ModelResource):
     class Meta:
         queryset = Call.objects.all()
         resource_name = 'call'
+        limit = 0
         authorization = Authorization()
         authentication = Authentication()
+        fields = ['time', 'type']
+        cache = SimpleCache(timeout=1000)
+
+    # def dehydrate_type(self, bundle):
+    #     # return the value that you want returned
+    #     bundle.obj.type += 1
+    #     return bundle.obj.type
 
 
 class BoosterResource(ModelResource):
@@ -77,8 +89,11 @@ class BoosterResource(ModelResource):
     class Meta:
         queryset = Booster.objects.all()
         resource_name = 'booster'
+        limit = 0
         authorization = Authorization()
         authentication = Authentication()
+        fields = ['time', 'type']
+        cache = SimpleCache(timeout=1000)
 
 
 class DataResource(ModelResource):
@@ -87,8 +102,11 @@ class DataResource(ModelResource):
     class Meta:
         queryset = Data.objects.all()
         resource_name = 'data'
+        limit = 0
         authorization = Authorization()
         authentication = Authentication()
+        fields = ['time', 'type']
+        cache = SimpleCache(timeout=1000)
 
 
 class RoamingResource(ModelResource):
@@ -97,5 +115,8 @@ class RoamingResource(ModelResource):
     class Meta:
         queryset = Roaming.objects.all()
         resource_name = 'roaming'
+        limit = 0
         authorization = Authorization()
         authentication = Authentication()
+        fields = ['time', 'type']
+        cache = SimpleCache(timeout=1000)

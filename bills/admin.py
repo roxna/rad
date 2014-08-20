@@ -5,7 +5,7 @@ from bills.models import User, Subscriber, Plan, Call, Booster, Data, Roaming, B
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['name', 'username']
+    list_display = ['name', 'username', 'email']
 
 
 class SubscriberAdmin(admin.ModelAdmin):

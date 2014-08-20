@@ -1,7 +1,7 @@
 
     <div class="form-box">
         <div class="header">Profile</div>
-        <form method="post">
+        <form method="post" action="{% url "profile" %}">
             <div class="body bg-gray">
                 {% csrf_token %}
                 {% for field in form %}
@@ -12,7 +12,7 @@
                 {% endfor %}
             </div>
             <div class="footer">
-                <button type="submit" class="btn bg-dark-teal btn-block">Save</button>
+                <input type="submit" value="Save" class="btn bg-dark-teal btn-block">
             </div>
         </form>
     </div>

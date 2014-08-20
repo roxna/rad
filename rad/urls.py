@@ -33,15 +33,7 @@ urlpatterns = patterns('',
     # AJAX URLS
     url(r'^profile/$', 'bills.views.profile', name='profile'),
     url(r'^dashboard_analysis/$', 'bills.views.dashboard_analysis', name='dashboard_analysis'),
-    # url(r'^call_analysis/$', 'bills.views.call_analysis', name='call_analysis'),
-    # url(r'^booster_analysis/$', 'bills.views.booster_analysis', name='booster_analysis'),
-    # url(r'^data_analysis/$', 'bills.views.data_analysis', name='data_analysis'),
-    # url(r'^more_analysis/$', 'bills.views.more_analysis', name='more_analysis'),
-
-
     url(r'^upload_data/$', 'bills.views.upload_data', name='upload_data'),
-    url(r'^save_uploaded_data/$', 'bills.views.save_uploaded_data', name='save_uploaded_data'),
-    # url(r'^parse_data/$', 'bills.views.parse_data', name='parse_data'),
 
     url(r'^api/', include(v1_api.urls)),
 

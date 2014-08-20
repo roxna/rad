@@ -40,7 +40,7 @@
         <header class="header">
             <a href="{% url "dashboard" %}" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
-                Ring-a-Ding
+                MobiLogic
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
@@ -112,7 +112,7 @@
                             <a id="boosters"><i class="fa fa-envelope"></i> <span>Booster (SMS) Analysis</span></a>
                         </li>
                         <li class="active">
-                            <a id="data"><i class="fa fa-info-circle"></i> <span>Data / Roaming Analysis</span></a>
+                            <a id="data"><i class="fa fa-info-circle"></i> <span>Roaming/Data Analysis</span></a>
                         </li>
                         <li class="active">
                             <a id="more"><i class="fa fa-magic"></i> <span>Plan Analysis</span></a>
@@ -127,6 +127,13 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1 id="page-header">Dashboard</h1>
+{#                    <h1 style="float: right">#}
+{#                        {% if messages %}#}
+{#                            {% for message in messages %}#}
+{#                                {{ message }}#}
+{#                            {% endfor %}#}
+{#                        {% endif %}#}
+{#                    </h1>#}
                 </section>
 
             <!-- Main content -->
@@ -138,33 +145,43 @@
 
                         <!-- Dashboard-block toggle-hide on analysis AJAX request; charts filled in according in AJAX requests -->
                         <div id="dashboard-block">
-                            <div class="col-lg-4 col-xs-6">
+                            <div class="col-lg-3 col-xs-6">
                                <div class="small-box bg-red">
                                     <div class="inner">
                                         <h3>{{ total_calls_cost_percent }}%</h3>
-                                        <p>Calls spend breakdown</p>
+                                        <p>Calls spend</p>
                                     </div>
                                     <div class="icon"><i class="ion ion-pie-graph"></i></div>
                                     <div class="small-box-footer"><i class="fa fa-star"></i></div>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-xs-6">
+                            <div class="col-lg-3 col-xs-6">
                                <div class="small-box bg-green">
                                     <div class="inner">
                                         <h3>{{ total_boosters_cost_percent }}%</h3>
-                                        <p>Boosters (SMS) spend breakdown</p>
+                                        <p>SMS spend</p>
                                     </div>
                                     <div class="icon"><i class="ion ion-stats-bars"></i></div>
                                     <div class="small-box-footer"><i class="fa fa-star"></i></div>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-xs-6">
+                            <div class="col-lg-3 col-xs-6">
                                <div class="small-box bg-blue">
                                     <div class="inner">
                                         <h3>{{ total_data_cost_percent }}%</h3>
-                                        <p>Data spend breakdown</p>
+                                        <p>Data spend</p>
                                     </div>
                                     <div class="icon"><i class="ion ion-arrow-graph-up-right"></i></div>
+                                    <div class="small-box-footer"><i class="fa fa-star"></i></div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-xs-6">
+                               <div class="small-box bg-yellow">
+                                    <div class="inner">
+                                        <h3>{{ total_roaming_cost_percent }}%</h3>
+                                        <p>Roaming spend</p>
+                                    </div>
+                                    <div class="icon"><i class="ion ion-map"></i></div>
                                     <div class="small-box-footer"><i class="fa fa-star"></i></div>
                                 </div>
                             </div>
@@ -178,30 +195,45 @@
                                     </div>
                                 </div>
                             </div>
+{#                            <div class="col-md-12">#}
+{#                                <h3>Key insights</h3>#}
+{#                                <div id="key-insights"></div>#}
+{#                            </div>#}
                         </div>
 
 
                         <!-- Chart-block toggle-show on analysis AJAX request; charts filled in according in AJAX requests -->
                         <div id="chart-block" style="display: none">
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="chart1">
                                 <div class="box box-primary">
                                     <div class="box-header">
                                         <i class="fa fa-bar-chart-o"></i>
                                         <div class="box-title" id="chart1-header"></div>
                                     </div>
                                     <div class="box-body chart-responsive">
-                                        <div class="chart" id="chart1"></div>
+                                        <div class="chart" id="chart1-body"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="chart3">
                                 <div class="box box-primary">
                                     <div class="box-header">
                                         <i class="fa fa-bar-chart-o"></i>
                                         <div class="box-title" id="chart2-header"></div>
                                     </div>
                                     <div class="box-body chart-responsive">
-                                        <div class="chart" id="chart2"></div>
+                                        <div class="chart" id="chart2-body"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" id="chart3">
+                                <div class="box box-primary">
+                                    <div class="box-header">
+                                        <i class="fa fa-bar-chart-o"></i>
+                                        <div class="box-title" id="chart3-header"></div>
+                                    </div>
+                                    <div class="box-body chart-responsive">
+                                        <div class="chart" id="chart3-body"></div>
                                     </div>
                                 </div>
                             </div>
@@ -228,7 +260,12 @@
         <script src="{% static "js/bootstrap.min.js" %}" type="text/javascript"></script>
 
         <!-- Custom JS files-->
-        <script src="{% static "js/index.js" %}" type="text/javascript"></script>
+        <script src="{% static "js/custom/charts-calls.js" %}" type="text/javascript"></script>
+        <script src="{% static "js/custom/charts-boosters.js" %}" type="text/javascript"></script>
+        <script src="{% static "js/custom/charts-data.js" %}" type="text/javascript"></script>
+        <script src="{% static "js/custom/charts-plan.js" %}" type="text/javascript"></script>
+        <script src="{% static "js/custom/dashboard.js" %}" type="text/javascript"></script>
+        <script src="{% static "js/custom/forms.js" %}" type="text/javascript"></script>
 
         <!-- HighCharts.js charts -->
         <script src="{% static "js/plugins/highcharts/highcharts.js" %}"></script>

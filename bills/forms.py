@@ -84,9 +84,17 @@ class ProfileForm(forms.ModelForm):
                                  'placeholder': 'E-mail',
                                  'class': 'form-control'
                              }))
-    image = forms.ImageField(required=True,
-                             widget=forms.FileInput)
+    # image = forms.ImageField(required=True,
+    #                          widget=forms.FileInput)
 
     class Meta:
         model = User
-        fields = ['name', 'username', 'email', 'image']
+        fields = ['name', 'username', 'email']
+
+
+class UploadDataForm(forms.Form):
+    file = forms.FileField(required=True)
+    password = forms.CharField(required=True,
+                               widget=forms.TextInput(attrs={
+                                   'placeholder': 'Password',
+                                   'class': 'form-control' }))
