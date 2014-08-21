@@ -49,8 +49,6 @@ $(document).ready(function(){
                 var time_20_22 = 0;
                 var time_22_24 = 0;
 
-                var data = [];
-
                 for (var i = 0; i < calls_analysis.objects.length; i++) {
                     if (calls_analysis.objects[i].type == 1) {outgoing_local_same_network++;}
                     else if (calls_analysis.objects[i].type == 2) {outgoing_local_other_network++;}
@@ -91,12 +89,10 @@ $(document).ready(function(){
                         pie: {
                             allowPointSelect: true,
                             cursor: 'pointer',
+                            colors: ['#7F5852', '#f56954', '#FFB0A4'],
                             dataLabels: {
                                 enabled: true,
                                 format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                                style: {
-                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                                }
                             }
                         }
                     },
@@ -124,8 +120,7 @@ $(document).ready(function(){
                         stackLabels: {
                             enabled: true,
                             style: {
-                                fontWeight: 'bold',
-                                color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                                fontWeight: 'bold'
                             }
                         }
                     },
@@ -134,20 +129,25 @@ $(document).ready(function(){
                         shared: true
                     },
                     plotOptions: {
-                        column: {stacking: 'percent'}
+                        column: {
+                            stacking: 'percent'
+                        }
                     },
                     series: [
                         {
                             name: 'Same network',
-                            data: [outgoing_local_same_network, outgoing_std_same_network]
+                            data: [outgoing_local_same_network, outgoing_std_same_network],
+                            color: '#7F7F7F'
                         },
                         {
                             name: 'Other network',
-                            data: [outgoing_local_other_network, outgoing_std_other_network]
+                            data: [outgoing_local_other_network, outgoing_std_other_network],
+                            color: '#7F6F6E'
                         },
                         {
                             name: 'Fixed landline',
-                            data: [outgoing_local_fixed_landline, outgoing_std_fixed_landline]
+                            data: [outgoing_local_fixed_landline, outgoing_std_fixed_landline],
+                            color: '#FFDEDC'
                         }
                     ]
                 });
@@ -177,7 +177,7 @@ $(document).ready(function(){
                                 states: {
                                     hover: {
                                         enabled: true,
-                                        lineColor: 'rgb(100,100,100)'
+                                        lineColor: '#f56954'
                                     }
                                 }
                             },
@@ -196,7 +196,7 @@ $(document).ready(function(){
                     },
                     series: [{
                         name: 'All calls',
-                        color: 'rgba(223, 83, 83, .5)',
+                        color: '#f56954',
                         data: [
                             ['00:00-06:00', time_00_06],
                             ['06:00-08:00', time_06_08],

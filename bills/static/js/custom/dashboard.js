@@ -34,12 +34,10 @@ $(document).ready(function() {
                         pie: {
                             allowPointSelect: true,
                             cursor: 'pointer',
+                            colors: ['#f56954', '#00a65a', '#0073b7', '#f39c12'],
                             dataLabels: {
                                 enabled: true,
                                 format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                                style: {
-                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                                }
                             }
                         }
                     },

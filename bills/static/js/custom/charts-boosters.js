@@ -78,12 +78,10 @@ $(document).ready(function(){
                             pie: {
                                 allowPointSelect: true,
                                 cursor: 'pointer',
+                                colors: ['#36B569', '#00a65a','#78F2A9'],
                                 dataLabels: {
                                     enabled: true,
                                     format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                                    style: {
-                                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                                    }
                                 }
                             }
                         },
@@ -123,11 +121,13 @@ $(document).ready(function(){
                         series: [
                             {
                                 name: 'Same network',
-                                data: [outgoing_local_same_network, outgoing_std_same_network]
+                                data: [outgoing_local_same_network, outgoing_std_same_network],
+                                color: '#787F7A'
                             },
                             {
                                 name: 'Other network',
-                                data: [outgoing_local_other_network, outgoing_std_other_network]
+                                data: [outgoing_local_other_network, outgoing_std_other_network],
+                                color: '#C3FFD5'
                             }
                         ]
                     });
@@ -157,7 +157,7 @@ $(document).ready(function(){
                                     states: {
                                         hover: {
                                             enabled: true,
-                                            lineColor: 'rgb(100,100,100)'
+                                            lineColor: '#7BF597'
                                         }
                                     }
                                 },
@@ -177,7 +177,7 @@ $(document).ready(function(){
                         series: [
                             {
                                 name: '# SMS',
-                                color: 'rgba(223, 83, 83, .5)',
+                                color: '#7BF597',
                                 data: [
                                     ['00:00-06:00', time_00_06],
                                     ['06:00-08:00', time_06_08],

@@ -113,9 +113,9 @@ def upload_data(request):
     if request.method == 'POST':
         form = UploadDataForm(request.POST, request.FILES)
         if form.is_valid():
-            file = request.FILES['file']
+            pdf = request.FILES['file']
             password = request.POST['password']
-            parse_data(file, password)
+            parse_data(pdf, password)
             return redirect('/dashboard')
     else:
         form = UploadDataForm()

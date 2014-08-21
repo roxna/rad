@@ -44,12 +44,10 @@ $(document).ready(function(){
                         pie: {
                             allowPointSelect: true,
                             cursor: 'pointer',
+                            colors: ['#1B2D37', '#0073b7', '#3A90C3'],
                             dataLabels: {
                                 enabled: true,
                                 format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                                style: {
-                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                                }
                             }
                         }
                     },
@@ -102,12 +100,10 @@ $(document).ready(function(){
                         pie: {
                             allowPointSelect: true,
                             cursor: 'pointer',
+                            colors: ['#734A09', '#f39c12'],
                             dataLabels: {
                                 enabled: true,
                                 format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                                style: {
-                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                                }
                             }
                         }
                     },
@@ -134,8 +130,7 @@ $(document).ready(function(){
                         stackLabels: {
                             enabled: true,
                             style: {
-                                fontWeight: 'bold',
-                                color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                                fontWeight: 'bold'
                             }
                         }
                     },
@@ -149,11 +144,13 @@ $(document).ready(function(){
                     series: [
                         {
                             name: 'Incoming',
-                            data: [national_incoming_calls, national_incoming_sms]
+                            data: [national_incoming_calls, national_incoming_sms],
+                            color: '#736756'
                         },
                         {
                             name: 'Outgoing',
-                            data: [national_outgoing_calls, national_outgoing_sms]
+                            data: [national_outgoing_calls, national_outgoing_sms],
+                            color: '#FFF5C9'
                         },
                     ]
                 });

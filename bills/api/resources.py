@@ -75,7 +75,7 @@ class CallResource(ModelResource):
         authorization = Authorization()
         authentication = Authentication()
         fields = ['time', 'type']
-        cache = SimpleCache(timeout=1000)
+        cache = SimpleCache(timeout=5000)
 
     # def dehydrate_type(self, bundle):
     #     # return the value that you want returned
@@ -93,7 +93,7 @@ class BoosterResource(ModelResource):
         authorization = Authorization()
         authentication = Authentication()
         fields = ['time', 'type']
-        cache = SimpleCache(timeout=1000)
+        cache = SimpleCache(timeout=5000)
 
 
 class DataResource(ModelResource):
@@ -106,7 +106,7 @@ class DataResource(ModelResource):
         authorization = Authorization()
         authentication = Authentication()
         fields = ['time', 'type']
-        cache = SimpleCache(timeout=1000)
+        cache = SimpleCache(timeout=5000)
 
 
 class RoamingResource(ModelResource):
@@ -119,4 +119,4 @@ class RoamingResource(ModelResource):
         authorization = Authorization()
         authentication = Authentication()
         fields = ['time', 'type']
-        cache = SimpleCache(timeout=1000)
+        cache = SimpleCache(timeout=5000)
