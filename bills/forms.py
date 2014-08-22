@@ -93,6 +93,7 @@ class ProfileForm(forms.ModelForm):
 
 
 class UploadDataForm(forms.Form):
+    # file is a reserved python keyword
     file = forms.FileField(required=True)
     password = forms.CharField(required=True,
                                widget=forms.TextInput(attrs={
