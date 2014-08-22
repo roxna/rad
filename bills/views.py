@@ -75,6 +75,8 @@ def login(request, template_name='registration/login.html',
     return TemplateResponse(request, template_name, context,
                             current_app=current_app)
 
+# Is the concept of data tied to users actually implemented?
+# I'd imagine all of these aggregates below should also filter by the logged in user.
 
 @login_required
 def dashboard(request):
