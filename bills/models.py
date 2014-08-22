@@ -15,10 +15,13 @@ class User(AbstractUser):
 
 class Subscriber(models.Model):
     name = models.CharField(max_length=20, default="")
+    # Phone numbers are usually better stored as a CharField since there's many different formats
+    # There's also localized django libraries for phone numbers and location information
     phone_number = models.BigIntegerField(default=0)
     address = models.CharField(max_length=100, default="", null=True, blank=True)
     city = models.CharField(max_length=20, default="", null=True, blank=True)
     state = models.CharField(max_length=20, default="", null=True, blank=True)
+    # zip is a reserved keyword in python, should probably be zipcode
     zip = models.IntegerField(default=00000, null=True, blank=True)
     relationship_num = models.IntegerField(default=0, null=True, blank=True)
     credit_limit = models.IntegerField(default=0, null=True, blank=True)
@@ -35,9 +38,12 @@ class Plan(models.Model):
         (POSTPAID, 'Postpaid'),
         (PREPAID, 'Prepaid')
     )
+    # type's a reserved python keyword
+    # You don't need a max_length here
     type = models.IntegerField(max_length=20, choices=PLANS, default=1)
     name = models.CharField(max_length=30, default="")
     min_rental = models.IntegerField(default=0, null=True, blank=True)
+    # probably want to do what you did above with prepaid/postpaid and it being an IntegerField, usually best practice
     CURRENCY = (
         ('INR', 'INR'),
         ('USD', 'USD')
@@ -51,6 +57,7 @@ class Plan(models.Model):
 # BILL DETAILS - CENTRAL MODEL WITH FOREIGN/M2M KEYS TO OTHER MODELS
 class Bill(models.Model):
     number = models.IntegerField(default=0)
+    # Do these defaults actually work??
     start_date = models.DateField(default=2000-01-01)
     end_date = models.DateField(default=2000-01-01)
     bill_date = models.DateField(default=2000-01-01)
@@ -72,7 +79,7 @@ class Bill(models.Model):
     plan = models.ForeignKey(Plan, related_name='bill')
 
     def __unicode__(self):
-        return "{}".format(self.number)
+        return u"{}".format(self.number)
 
 
 # PARENT CLASS
@@ -80,6 +87,7 @@ class Usage(models.Model):
     date = models.DateField(default=2000-01-01)
     time = models.TimeField(default=datetime.datetime.strptime('12:12:12', '%H:%M:%S').time())
     recipient_number = models.BigIntegerField(default=0)
+    # probably want to just store it in milliseconds?
     duration = models.CharField(default='00:00', max_length=5, null=True, blank=True)
     volume = models.IntegerField(default=0, null=True, blank=True, max_length=6)
     cost = models.DecimalField(decimal_places=2, max_digits=7, default=0.00)
@@ -89,8 +97,11 @@ class Usage(models.Model):
         abstract = True
 
     def __unicode__(self):
-        return "On {}, to {}".format(self.date, self.recipient_number)
+        return u"On {}, to {}".format(self.date, self.recipient_number)
 
+# Not sure if this would give any kind of performance benefit, but you could have just had
+# a Usage model with a category foreign key for Call / Booster / Data, etc. Need to see the views.py next.
+# You could also store a "sub category" or the category table could have rows for each.
 
 # CHILDREN CLASSES
 class Call(Usage):
@@ -110,6 +121,7 @@ class Call(Usage):
         (OUTGOING_STD_FIXED_LANDLINE, 'Outgoing STD to Fixed Landline'),
         (OUTGOING_INTL, 'Outgoing International Call'),
     )
+    # don't need max_length (and technically it's only 1, since it's 1-7)
     type = models.IntegerField(max_length=70, choices=TYPE)
 
 
