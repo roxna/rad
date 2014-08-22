@@ -9,6 +9,11 @@ class Command(BaseCommand):
     help = 'Help text goes here'
 
     def handle(self, **options):
+        # Roxna! How is all of this one huge function?! You could split this up into a 'pipeline' type of model
+        # where you call multiple, smaller functions, one after another.
+        # A quick obvious way would be to split it up by the different pages you're parsing.
+        
+        # Parsing/reading PDF data is not fun though, congrats on getting it all working!
         with open('bills/pdfs/Unencrypted_MobileBill_1039029248_349197277_9980996446.pdf') as f:
             report = slate.PDF(f)
 
@@ -23,6 +28,7 @@ class Command(BaseCommand):
 
             ##### SUBSCRIBER MODEL DETAILS #####
 
+            # should make variables called first_page, second_page, etc instead of accessing report_pages[0] over and over
             name_match = re.search(r'121\'M\w+\s+\w+\s+\w+', report_pages[0], re.MULTILINE)
             name = name_match.group()[4:]
 
@@ -85,6 +91,7 @@ class Command(BaseCommand):
                 }
             )
 
+            # Page 3?
             """
             PAGE 1 -- BILL INFORMATION
             """
@@ -106,6 +113,9 @@ class Command(BaseCommand):
             due_date_match = re.search(r'(\d{2}\-\w+\-\d+beforebill number)', report_pages[0], re.MULTILINE)
             due_date = datetime.datetime.strptime(due_date_match.group()[:11], '%d-%b-%Y').date()
 
+            # Some of this looks like it could be abstracted out, it seems like for a lot there's a "string"
+            # you're trying to match on following by numbers. Could make a function you could call that
+            # you pass a couple of parameters to, to clean the code up.
             total_bill_match = re.search(r'month\'s charges\s+`[\d,\d.]+', report_pages[0], re.MULTILINE)
             total_bill = float(total_bill_match.group()[17:]) if total_bill_match else 0.00
 
@@ -233,8 +243,12 @@ class Command(BaseCommand):
                 # Currently doesn't get paise from next line so rounding up
                 cost = 0.50 if cost == 0 else cost
 
+                # You can abstract out all of the 'creates' below since they all seem to take the same information.
+                # You could have a variable that you save to represnet Call, Booster, etc then call create on that dynamically.
+                # Will clean up a lot of this part.
                 if date == "" or time == "" or recipient_number == 0:
                     pass
+                # Use elif key in ['call_local_same_network', 'call_local_other_network', etc]:
                 elif key == 'call_local_same_network' or key == 'call_local_other_network' or key == 'call_local_fixed_landline' \
                         or key == 'call_std_same_network' or key == 'call_std_other_network' or key == 'call_std_fixed_landline' \
                         or key == 'call_intl':
@@ -284,6 +298,7 @@ class Command(BaseCommand):
                         type=type,
                     )
 
+            # Checkout defaultdicts documentation for cleaning these variables up
             # Booleans for main categories (calls/sms/data/roaming)
             CATEGORY_BOOLEANS = {
                 'calls_local_boolean': False,
@@ -322,6 +337,7 @@ class Command(BaseCommand):
             def turn_off_booleans(boolean_dictionary):
                 for key, value in boolean_dictionary.iteritems():
                     boolean_dictionary[key] = False
+                    
 
             # PARSING ITEMIZED CALL INFORMATION, STARTS AT PAGE 3
             for page in report_pages[3:]:
@@ -329,6 +345,9 @@ class Command(BaseCommand):
                 # To avoid issue with splitting at '.' below
                 page = page.replace('airtelgprs.com', 'airtelgprs$com')
 
+                # This part of the code could also definitely be abstracted out. Lots of this looks a bit repeated.
+                # Usually by using an object-oriented approach with classes or breaking this into multiple functions
+                # it could be a lot more readable/maintainable 
                 for line in page.split("."):
                     # Turn on and off category booleans
                     calls_local_object = re.search(r'(voice calls - outgoing local)', line)
