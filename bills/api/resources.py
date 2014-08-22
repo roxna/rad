@@ -58,6 +58,7 @@ class BillResource(ModelResource):
     plan = ToOneField(PlanResource, 'plan', full=False, null=True)
 
     class Meta:
+        # Using prefetch_related on this queryset might speed this up A LOT getting the other ToMany resources
         queryset = Bill.objects.all()
         resource_name = 'bill'
         authorization = Authorization()
